@@ -1,21 +1,107 @@
 import React from "react";
-import {FaUser} from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaUser, FaCog, FaSignOutAlt, FaShoppingCart } from "react-icons/fa";
+import { Link , useNavigate} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useLogoutMutation } from "../slices/usersApiSlice";
+import {logout} from '../slices/authSlice';
 
 function Header() {
+  const { cartItems } = useSelector((state) => state.cart);
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const [logoutApiCall] = useLogoutMutation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const logoutHandler = async () => {
+    try{
+      await logoutApiCall();
+      dispatch(logout());
+      navigate('/login');
+    }
+    catch(err){
+      console.error(err);
+    }
+  }
+
+
   return (
-    <div>
-      <div className="navbar bg-base-100">
-        <div className="flex-1">
-          <a className="btn btn-ghost text-xl">ShopLoom</a>
-        </div>
-        <div className="flex-none">
-    <ul className="menu menu-horizontal px-1">
-      <li><Link to='/cart'><svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>Cart</Link></li>
-      <li><Link to='/login'><FaUser/>Sign In</Link></li>
-      </ul>
+    <div className="navbar bg-base-100">
+      <div className="flex-1">
+        <Link to="/" className="btn btn-ghost text-xl">
+          ShopLoom
+        </Link>
       </div>
-      
+      <div className="flex-none">
+        <div className="dropdown dropdown-end">
+          <Link
+            to="/cart"
+            tabIndex={0}
+            role="button"
+            className="btn btn-ghost btn-circle"
+          >
+            <div className="indicator">
+              <FaShoppingCart className="h-5 w-5" />
+              {cartItems.length > 0 && (
+                <span className="badge badge-sm indicator-item">
+                  {cartItems.length}
+                </span>
+              )}
+            </div>
+          </Link>
+        </div>
+        <div className="dropdown dropdown-end">
+          {userInfo ? (
+            <>
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle avatar"
+              >
+                <div className="w-10 rounded-full">
+                  <img
+                    alt="Tailwind CSS Navbar component"
+                    src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                  />
+                </div>
+              </div>
+              <ul
+                tabIndex={0}
+                className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+              >
+                <li>
+                  <Link to="/profile" className="justify-between">
+                    <FaUser />
+                    Profile
+                    <span className="badge">New</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/settings">
+                    <FaCog />
+                    Settings
+                  </Link>
+                </li>
+                <li>
+                  <Link  onClick={
+                    logoutHandler
+                  
+                  }>
+                    <FaSignOutAlt />
+                    Logout
+                  </Link>
+                </li>
+              </ul>
+            </>
+          ) : (
+            <li>
+              <Link to="/login">
+                <FaUser />
+                Sign In
+              </Link>
+            </li>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -17,7 +17,10 @@ function Product({ product }) {
             <h2 className="text-gray-800 text-lg font-semibold mb-2">
               {product.name}
             </h2>
-            <Rating value={product.rating} text={`${product.numReviews} reviews`} />
+            <Rating
+              value={product.rating}
+              text={`${product.numReviews} reviews`}
+            />
             {/* {product.description && (
               <p className="text-gray-600 mb-4">{product.description}</p>
             )} */}

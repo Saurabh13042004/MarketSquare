@@ -1,10 +1,9 @@
-import React from 'react';
+import React from "react";
 
 function Loader() {
   return (
-    <div className=' w-full h-full flex justify-center items-center'>
-   <span className="loading loading-spinner loading-lg"></span>
-
+    <div className=" w-full h-full flex justify-center items-center">
+      <span className="loading loading-spinner loading-lg"></span>
     </div>
   );
 }
